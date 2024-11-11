@@ -4,7 +4,7 @@ plugins {
 }
 
 android {
-    namespace 'com.testdeymer.repository'
+    namespace 'com.testdeymer.usecase'
     compileSdk 34
 
     defaultConfig {
