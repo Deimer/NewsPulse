@@ -4,7 +4,7 @@ plugins {
 }
 
 android {
-    namespace 'com.testdeymer.network'
+    namespace 'com.testdeymer.datasource'
     compileSdk 34
 
     defaultConfig {
