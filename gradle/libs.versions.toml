@@ -4,7 +4,7 @@ androidGradlePlugin = "8.5.2"
 kotlin = "1.9.0"
 devtoolsKsp = "1.9.0-1.0.12"
 #Ktx
-coreKtx = "1.15.0"
+coreKtx = "1.13.1"
 #Navigation
 navigation = "2.7.7"
 #Dependency Injection
@@ -36,6 +36,8 @@ roboelectricVersion = "4.8.2"
 textCore = "1.4.0"
 textCoreKtx = "1.7.0"
 archCoreTesting = "2.2.0"
+appcompat = "1.7.0"
+material = "1.12.0"
 
 [libraries]
 #Core libraries
@@ -82,6 +84,8 @@ mockito-inline = { group = "org.mockito", name = "mockito-inline", version.ref =
 coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test", version.ref = "coroutinesTest" }
 #Robolectric
 robokectric-test = { group = "org.robolectric", name = "robolectric", version.ref = "roboelectricVersion" }
+androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
+material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "androidGradlePlugin" }
