@@ -3,7 +3,7 @@ package com.testdeymer.network.constants
 object NetworkConstants {
 
     object ValuesKey {
-        const val BASE_URL="https://api.themoviedb.org/3/"
+        const val BASE_URL = "https://hn.algolia.com/api/v1/"
     }
 
     object Defaults {
