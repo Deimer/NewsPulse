@@ -10,7 +10,7 @@ interface IHitLocalDataSource {
 
     suspend fun fetchHitById(
         objectId: String
-    ): HitEntity
+    ): HitEntity?
 
     suspend fun deleteHit(objectId: String)
 
