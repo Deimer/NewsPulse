@@ -10,5 +10,5 @@ import com.testdeymer.database.constants.DataConstants.Columns
 data class DeletedHitEntity(
     @PrimaryKey
     @ColumnInfo(name = Columns.OBJECT_ID)
-    val id: String,
+    val objectId: String,
 )

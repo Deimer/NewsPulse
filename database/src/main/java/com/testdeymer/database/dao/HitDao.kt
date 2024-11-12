@@ -23,6 +23,9 @@ interface HitDao {
     """)
     suspend fun getAll(): List<HitEntity>
 
+    @Query("SELECT * FROM $HIT_TABLE WHERE objectId = :objectId LIMIT 1")
+    suspend fun getHitDetailsById(objectId: String): HitEntity
+
     @Query("SELECT objectId FROM $DELETED_HIT_TABLE")
     suspend fun getDeletedIds(): List<String>
 
@@ -31,9 +34,6 @@ interface HitDao {
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun markAsDeleted(deletedHit: DeletedHitEntity)
-
-    @Query("SELECT * FROM $HIT_TABLE WHERE objectId = :id LIMIT 1")
-    suspend fun getHitDetailsById(id: String): HitEntity
 
     @Transaction
     suspend fun deleteHitAndMarkAsDeleted(objectId: String) {

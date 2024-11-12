@@ -10,7 +10,7 @@ import com.testdeymer.database.constants.DataConstants.Columns
 data class HitEntity(
     @PrimaryKey
     @ColumnInfo(name = Columns.OBJECT_ID)
-    val id: String,
+    val objectId: String,
     @ColumnInfo(name = Columns.AUTHOR)
     val author: String,
     @ColumnInfo(name = Columns.COMMENT_TEXT)
