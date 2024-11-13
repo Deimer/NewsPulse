@@ -50,6 +50,7 @@ android {
 
 dependencies {
     //Module
+    implementation projects.presentation
     implementation projects.usecase
     //Kotlin
     implementation libs.core.ktx
