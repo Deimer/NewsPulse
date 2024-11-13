@@ -20,6 +20,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.testdeymer.newspulse.features.splash.SplashScreenActions
+import com.testdeymer.newspulse.features.splash.SplashScreenCompose
 import com.testdeymer.presentation.components.SnackBarCompose
 import com.testdeymer.newspulse.navigation.AppScreens.SplashScreen
 import com.testdeymer.newspulse.navigation.AppScreens.HomeScreen
@@ -64,7 +66,12 @@ private fun BodyCompose(
             enterTransition = { inFadeAnimation() },
             exitTransition = { outFadeAnimation() }
         ) {
-
+            SplashScreenCompose(actions = SplashScreenActions(
+                onPrimaryAction = {
+                    navController.popBackStack()
+                    navController.navigate(route = HomeScreen.route)
+                },
+            ))
         }
         composable(
             route = HomeScreen.route,
