@@ -4,5 +4,5 @@ data class ItemUiModel(
     val id: String = "",
     val title: String = "",
     val description: String = "",
-    val onClick: () -> Unit = {},
+    var onClick: () -> Unit = {},
 )

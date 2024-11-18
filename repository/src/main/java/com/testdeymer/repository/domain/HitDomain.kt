@@ -4,6 +4,7 @@ data class HitDomain(
     val objectId: String,
     val author: String,
     val commentText: String,
+    val createdAtMini: String,
     val createdAtShort: String,
     val createdAtFull: String,
     val updatedAtShort: String,

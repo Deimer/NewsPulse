@@ -19,11 +19,12 @@ import com.testdeymer.presentation.theme.NewsPulseTheme
 @Composable
 fun ItemCompose(
     itemUi: ItemUiModel,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit = {},
 ) {
     Box(
         modifier = modifier
-            .clickable(onClick = itemUi.onClick)
+            .clickable(onClick = onClick)
             .fillMaxWidth()
             .padding(
                 top = dimensionResource(id = R.dimen.dimen_2),
@@ -31,8 +32,10 @@ fun ItemCompose(
             )
     ) {
         Column(
-            modifier = Modifier
-                .align(Alignment.CenterStart)
+            modifier = Modifier.align(Alignment.CenterStart).padding(
+                top = dimensionResource(id = R.dimen.dimen_12),
+                bottom = dimensionResource(id = R.dimen.dimen_12)
+            )
         ) {
             Text(
                 text = itemUi.title,

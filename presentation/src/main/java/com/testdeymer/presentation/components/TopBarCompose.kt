@@ -20,7 +20,7 @@ import com.testdeymer.presentation.theme.NewsPulseTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TopBar(
+fun TopBarCompose(
     modifier: Modifier = Modifier,
     title: String = "",
     subtitle: String = "",
@@ -63,7 +63,7 @@ fun TopBar(
 @Composable
 fun CustomTopBarPreview() {
     NewsPulseTheme {
-        TopBar(
+        TopBarCompose(
             title = "Title",
             subtitle = "Subtitle",
         )
