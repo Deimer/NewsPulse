@@ -15,7 +15,9 @@ class HitLocalDataSource @Inject constructor(
         val hitsToInsert = hits.filter { hit ->
             hit.objectId !in deletedIds
         }
-        hitDao.insertAll(hitsToInsert)
+        if (hitsToInsert.isNotEmpty()) {
+            hitDao.insertAll(hitsToInsert)
+        }
     }
 
     override suspend fun fetchHitById(
