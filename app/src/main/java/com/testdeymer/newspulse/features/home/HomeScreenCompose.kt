@@ -54,7 +54,7 @@ fun HomeScreenCompose(
 }
 
 @Composable
-fun BodyCompose(
+private fun BodyCompose(
     actions: HomeScreenActions,
     itemList: List<ItemUiModel>,
     isRefreshing: Boolean,
@@ -65,7 +65,6 @@ fun BodyCompose(
         modifier = Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-
         TopBarCompose(
             title = stringResource(id = R.string.home),
             modifier = Modifier,
@@ -103,7 +102,7 @@ fun BodyCompose(
 
 @Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
-fun BodyComposePreview() {
+private fun BodyComposePreview() {
     val exampleItems = MutableList(5) { index ->
         ItemUiModel(
             id = index.toString(),

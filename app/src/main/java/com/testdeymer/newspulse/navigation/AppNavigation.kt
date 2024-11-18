@@ -20,6 +20,9 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.testdeymer.newspulse.features.detail.DetailScreenActions
+import com.testdeymer.newspulse.features.detail.DetailScreenAttributes
+import com.testdeymer.newspulse.features.detail.DetailScreenCompose
 import com.testdeymer.newspulse.features.home.HomeScreenActions
 import com.testdeymer.newspulse.features.home.HomeScreenAttributes
 import com.testdeymer.newspulse.features.home.HomeScreenCompose
@@ -43,7 +46,9 @@ fun AppNavigation(
         snackbarHost = { SnackBarCompose(snackbarHostState) },
         content = { innerPadding ->
             Surface(
-                modifier = Modifier.fillMaxSize().padding(innerPadding),
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(innerPadding),
                 color = MaterialTheme.colorScheme.background
             ) {
                 BodyCompose(
@@ -100,7 +105,20 @@ private fun BodyCompose(
                 }
             )
         ) {
-
+            DetailScreenCompose(
+                attributes = DetailScreenAttributes(
+                    objectId = it.arguments?.getString(OBJECT_ID).orEmpty(),
+                    snackbarHostState = snackbarHostState,
+                    actions = DetailScreenActions(
+                        onPrimaryAction = {
+                            navController.popBackStack()
+                        },
+                        onSecondaryAction = {
+                            println("More details")
+                        }
+                    ),
+                )
+            )
         }
     }
 }

@@ -10,7 +10,6 @@ object RepositoryConstants {
         const val TAG_DATE_FORMAT_MINI = "EEEE"
         const val TAG_DATE_UNKNOWN = "Date: Unknown"
         const val TAG_NULL = "null"
-        const val TAG_DEFAULT = "Default"
         const val TAG_TODAY = "today"
     }
 }

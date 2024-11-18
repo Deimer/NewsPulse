@@ -40,11 +40,11 @@ fun Long.toShortHumanDate(): String {
         calendarToday.get(Calendar.YEAR) == calendarInput.get(Calendar.YEAR) &&
                 calendarToday.get(Calendar.DAY_OF_YEAR) == calendarInput.get(Calendar.DAY_OF_YEAR) -> TAG_TODAY
         calendarInput.after(Calendar.getInstance().apply { add(Calendar.DATE, -7) }) ->
-            SimpleDateFormat(TAG_DATE_FORMAT_MINI, Locale.getDefault())
+            SimpleDateFormat(TAG_DATE_FORMAT_MINI, Locale.US)
                 .format(calendarInput.time)
                 .replaceFirstChar { it.uppercaseChar() }
         else ->
-            SimpleDateFormat(TAG_DATE_FORMAT_SHORT, Locale.getDefault())
+            SimpleDateFormat(TAG_DATE_FORMAT_SHORT, Locale.US)
                 .format(calendarInput.time)
                 .replaceFirstChar { it.uppercaseChar() }
     }
