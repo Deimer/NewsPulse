@@ -19,5 +19,13 @@ dependencyResolutionManagement {
     }
 }
 
+enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
+
 rootProject.name = "NewsPulse"
 include ':app'
+include ':network'
+include ':database'
+include ':datasource'
+include ':repository'
+include ':usecase'
+include ':presentation'
