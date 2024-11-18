@@ -129,7 +129,7 @@ private fun BodyCompose(
                         start = 8.dp,
                     ),
                     linkText = itemDetail.url,
-                    onClick = { actions.onSecondaryAction }
+                    onClick = { actions.onSecondaryAction(itemDetail.url) }
                 )
             }
         }
