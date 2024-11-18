@@ -1,5 +1,6 @@
 package com.testdeymer.newspulse.navigation
 
+import android.net.Uri
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
 import androidx.compose.animation.fadeIn
@@ -28,11 +29,16 @@ import com.testdeymer.newspulse.features.home.HomeScreenAttributes
 import com.testdeymer.newspulse.features.home.HomeScreenCompose
 import com.testdeymer.newspulse.features.splash.SplashScreenActions
 import com.testdeymer.newspulse.features.splash.SplashScreenCompose
+import com.testdeymer.newspulse.features.web.WebScreenActions
+import com.testdeymer.newspulse.features.web.WebScreenAttributes
+import com.testdeymer.newspulse.features.web.WebScreenCompose
 import com.testdeymer.presentation.components.SnackBarCompose
 import com.testdeymer.newspulse.navigation.AppScreens.SplashScreen
 import com.testdeymer.newspulse.navigation.AppScreens.HomeScreen
 import com.testdeymer.newspulse.navigation.AppScreens.DetailScreen
+import com.testdeymer.newspulse.navigation.AppScreens.WebScreen
 import com.testdeymer.newspulse.navigation.RouteArguments.OBJECT_ID
+import com.testdeymer.newspulse.navigation.RouteArguments.URL
 import com.testdeymer.presentation.utils.PresentationConstants.AnimationConstants.TRANSITION_DURATION
 import com.testdeymer.presentation.utils.toNegative
 
@@ -113,8 +119,31 @@ private fun BodyCompose(
                         onPrimaryAction = {
                             navController.popBackStack()
                         },
-                        onSecondaryAction = {
-                            println("More details")
+                        onSecondaryAction = { url ->
+                            val encodedUrl = Uri.encode(url)
+                            navController.navigate(route = "${WebScreen.route}/$encodedUrl")
+                        }
+                    ),
+                )
+            )
+        }
+        composable(
+            route = "${WebScreen.route}/{$URL}",
+            enterTransition = { inFadeAnimation() },
+            exitTransition = { outFadeAnimation() },
+            arguments = listOf(
+                navArgument(name = URL) {
+                    type = StringType
+                }
+            )
+        ) {
+            val decodeUrl = it.arguments?.getString(URL)?.let { encodedUrl -> Uri.decode(encodedUrl) }.orEmpty()
+            WebScreenCompose(
+                attributes = WebScreenAttributes(
+                    url = decodeUrl,
+                    actions = WebScreenActions(
+                        onPrimaryAction = {
+                            navController.popBackStack()
                         }
                     ),
                 )
