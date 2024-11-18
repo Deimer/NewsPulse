@@ -2,9 +2,9 @@ name: NewsPulse CI
 
 on:
   push:
-    branches: [ "master" ]
+    branches: [ "master", "feat/NP-020-implement-ci-cd" ]
   pull_request:
-    branches: [ "master" ]
+    branches: [ "master", "feat/NP-020-implement-ci-cd" ]
 
 jobs:
   build:
