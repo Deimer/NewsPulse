@@ -61,7 +61,7 @@ fun NewsPulseTheme(
     if (!view.isInEditMode) {
         SideEffect {
             val window = (view.context as Activity).window
-            window.statusBarColor = ChineseBlack.toArgb()
+            window.statusBarColor = if (darkTheme) ChineseBlack.toArgb() else White.toArgb()
             WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = !darkTheme
         }
     }
