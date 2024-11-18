@@ -14,7 +14,16 @@ class HitRepository @Inject constructor(
     private val hitLocalDataSource: IHitLocalDataSource
 ) : IHitRepository {
 
-    override suspend fun getAllHits() = try {
+    override suspend fun getHits() = try {
+        val dtoList = hitRemoteDataSource.getHits()
+        hitLocalDataSource.insertHit(dtoList.map { it.toEntity() })
+        val entities = hitLocalDataSource.fetchHits().map { it.toDomain() }
+        OnResult.Success(entities)
+    } catch (exception: Exception) {
+        OnResult.Error(exception)
+    }
+
+    override suspend fun fetchAllHits() = try {
         val result = hitLocalDataSource.fetchHits()
         if(result.isNotEmpty()) {
             OnResult.Success(result.map { it.toDomain() })

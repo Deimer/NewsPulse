@@ -11,12 +11,12 @@ data class HitEntity(
     @PrimaryKey
     @ColumnInfo(name = Columns.OBJECT_ID)
     val objectId: String,
+    @ColumnInfo(name = Columns.TITLE)
+    val title: String?,
     @ColumnInfo(name = Columns.AUTHOR)
     val author: String,
     @ColumnInfo(name = Columns.COMMENT_TEXT)
     val commentText: String?,
-    @ColumnInfo(name = Columns.TITLE)
-    val title: String?,
     @ColumnInfo(name = Columns.URL)
     val url: String?,
     @ColumnInfo(name = Columns.CREATED_AT)

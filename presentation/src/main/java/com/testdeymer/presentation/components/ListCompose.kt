@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
@@ -17,7 +18,6 @@ import com.testdeymer.presentation.R
 import com.testdeymer.presentation.models.ItemUiModel
 import com.testdeymer.presentation.theme.Gray40
 import com.testdeymer.presentation.theme.NewsPulseTheme
-import com.testdeymer.presentation.theme.White
 
 @Composable
 fun ListCompose(
@@ -29,7 +29,7 @@ fun ListCompose(
         state = lazyListState,
         modifier = Modifier
             .fillMaxWidth()
-            .background(White),
+            .background(MaterialTheme.colorScheme.background),
         verticalArrangement = Arrangement.SpaceEvenly
     ) {
         items(list.size) { index ->
