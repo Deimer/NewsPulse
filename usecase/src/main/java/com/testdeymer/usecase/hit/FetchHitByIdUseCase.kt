@@ -7,7 +7,7 @@ class FetchHitByIdUseCase @Inject constructor(
     private val hitRepository: IHitRepository
 ) {
 
-    suspend fun invoke(
+    fun invoke(
         objectId: String
     ) = hitRepository.getHitById(
         objectId

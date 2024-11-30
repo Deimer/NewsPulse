@@ -3,9 +3,11 @@ package com.testdeymer.usecase
 import com.testdeymer.repository.repositories.IHitRepository
 import com.testdeymer.usecase.hit.DeleteHitByIdUseCase
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
-import org.junit.Assert.fail
+import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
 import org.mockito.Mock
@@ -28,25 +30,31 @@ class DeleteHitByIdUseCaseTest {
     }
 
     @Test
-    fun `invoke should successfully delete hit when repository completes without error`() = runTest {
+    fun `invoke should emit success result when repository deletes hit`() = runTest {
         val objectId = "123"
-        `when`(mockHitRepository.deleteHitById(objectId)).thenReturn(Unit)
-        val result = deleteHitByIdUseCase.invoke(objectId)
+        val successFlow = flowOf(Result.success(Unit))
+        `when`(mockHitRepository.deleteHitById(objectId)).thenReturn(successFlow)
+        val results = mutableListOf<Result<Unit>>()
+        deleteHitByIdUseCase.invoke(objectId).toList(results)
+        assertEquals(1, results.size)
+        val result = results.first()
+        assertTrue(result.isSuccess)
+        assertEquals(Unit, result.getOrNull())
         verify(mockHitRepository).deleteHitById(objectId)
-        assertEquals(Unit, result)
     }
 
     @Test
-    fun `invoke should propagate exception when repository throws an error`() = runTest {
+    fun `invoke should emit error result when repository throws an exception`() = runTest {
         val objectId = "123"
         val exception = RuntimeException("Test exception")
-        `when`(mockHitRepository.deleteHitById(objectId)).thenThrow(exception)
-        try {
-            deleteHitByIdUseCase.invoke(objectId)
-            fail("Expected exception was not thrown")
-        } catch (e: RuntimeException) {
-            assertEquals(exception, e)
-        }
+        val errorFlow = flowOf(Result.failure<Unit>(exception))
+        `when`(mockHitRepository.deleteHitById(objectId)).thenReturn(errorFlow)
+        val results = mutableListOf<Result<Unit>>()
+        deleteHitByIdUseCase.invoke(objectId).toList(results)
+        assertEquals(1, results.size)
+        val result = results.first()
+        assertTrue(result.isFailure)
+        assertEquals(exception, result.exceptionOrNull())
         verify(mockHitRepository).deleteHitById(objectId)
     }
 }

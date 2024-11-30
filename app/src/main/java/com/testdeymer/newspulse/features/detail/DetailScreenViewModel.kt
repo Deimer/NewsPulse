@@ -3,16 +3,18 @@ package com.testdeymer.newspulse.features.detail
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.testdeymer.newspulse.di.IoDispatcher
+import com.testdeymer.newspulse.extensions.failure
+import com.testdeymer.newspulse.extensions.launchIn
+import com.testdeymer.newspulse.extensions.map
+import com.testdeymer.newspulse.extensions.success
 import com.testdeymer.newspulse.mapper.toUiModel
 import com.testdeymer.presentation.models.ItemUiModel
-import com.testdeymer.repository.utils.OnResult
 import com.testdeymer.usecase.hit.FetchHitByIdUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 sealed class DetailUiState {
@@ -34,20 +36,12 @@ class DetailScreenViewModel @Inject constructor(
     val itemUiState: StateFlow<ItemUiModel> = _itemUiState.asStateFlow()
 
     fun getDetail(objectId: String) {
-        viewModelScope.launch(ioDispatcher) {
-            when(val result = fetchHitByIdUseCase.invoke(objectId)) {
-                is OnResult.Success -> {
-                    _detailUiState.emit(DetailUiState.Success)
-                    _itemUiState.value = result.data.toUiModel()
-                }
-                is OnResult.Error -> {
-                    _detailUiState.emit(
-                        DetailUiState.Error(
-                            result.exception.message
-                        )
-                    )
-                }
-            }
-        }
+        fetchHitByIdUseCase.invoke(objectId).map { hit ->
+            _itemUiState.value = hit.toUiModel()
+        }.success {
+            _detailUiState.emit(DetailUiState.Success)
+        }.failure { exception ->
+            _detailUiState.emit(DetailUiState.Error(exception.message))
+        }.launchIn(viewModelScope, ioDispatcher)
     }
 }

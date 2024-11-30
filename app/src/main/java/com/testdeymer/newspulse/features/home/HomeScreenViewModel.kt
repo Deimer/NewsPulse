@@ -3,20 +3,23 @@ package com.testdeymer.newspulse.features.home
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.testdeymer.newspulse.di.IoDispatcher
+import com.testdeymer.newspulse.extensions.default
+import com.testdeymer.newspulse.extensions.isIOEx
+import com.testdeymer.newspulse.extensions.failure
+import com.testdeymer.newspulse.extensions.launchIn
+import com.testdeymer.newspulse.extensions.map
+import com.testdeymer.newspulse.extensions.success
+import com.testdeymer.newspulse.extensions.start
 import com.testdeymer.newspulse.mapper.toUiModel
 import com.testdeymer.presentation.models.ItemUiModel
-import com.testdeymer.repository.utils.OnResult
 import com.testdeymer.usecase.hit.DeleteHitByIdUseCase
 import com.testdeymer.usecase.hit.FetchAllHitsUseCase
 import com.testdeymer.usecase.hit.GetHitsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.launch
-import java.io.IOException
 import javax.inject.Inject
 
 sealed class HomeUiState {
@@ -48,47 +51,43 @@ class HomeScreenViewModel @Inject constructor(
     }
 
     private fun fetchAllHits() {
-        CoroutineScope(ioDispatcher).launch {
-            when(val result = fetchAllHitsUseCase.invoke()) {
-                is OnResult.Success -> {
-                    _itemList.value = result.data.toUiModel()
-                    _homeUiState.emit(HomeUiState.Success)
+        fetchAllHitsUseCase.invoke()
+            .map { hits ->
+                _itemList.value = hits.toUiModel()
+            }.success {
+                _homeUiState.emit(HomeUiState.Success)
+            }.failure { exception ->
+                exception.isIOEx {
+                    _homeUiState.emit(HomeUiState.ConnectionError)
                 }
-                is OnResult.Error -> {
-                    if (result.exception is IOException) {
-                        _homeUiState.emit(HomeUiState.ConnectionError)
-                    } else {
-                        _homeUiState.emit(HomeUiState.Error(result.exception.message.orEmpty()))
-                    }
+                exception.default {
+                    _homeUiState.emit(HomeUiState.Error(exception.message.orEmpty()))
                 }
-            }
-        }
+            }.launchIn(viewModelScope, ioDispatcher)
     }
 
     fun getHits() {
-        CoroutineScope(ioDispatcher).launch {
+        getHitsUseCase.invoke().start {
             _isRefreshing.emit(true)
-            when(val result = getHitsUseCase.invoke()) {
-                is OnResult.Success -> {
-                    _itemList.value = result.data.toUiModel()
-                    _isRefreshing.emit(false)
-                }
-                is OnResult.Error -> {
-                    _isRefreshing.emit(false)
-                    if (result.exception is IOException) {
-                        _homeUiState.emit(HomeUiState.ConnectionError)
-                    } else {
-                        _homeUiState.emit(HomeUiState.Error(result.exception.message.orEmpty()))
-                    }
-                }
+        }.map { hits ->
+            _itemList.value = hits.toUiModel()
+        }.success {
+            _isRefreshing.emit(false)
+        }.failure { exception ->
+            exception.isIOEx {
+                _homeUiState.emit(HomeUiState.ConnectionError)
             }
-        }
+            exception.default {
+                _homeUiState.emit(HomeUiState.Error(exception.message.orEmpty()))
+            }
+        }.launchIn(viewModelScope, ioDispatcher)
     }
 
     fun deleteHitById(objectId: String) {
-        viewModelScope.launch {
-            deleteHitByIdUseCase.invoke(objectId)
+        deleteHitByIdUseCase.invoke(objectId).success {
             _itemList.value = _itemList.value.filterNot { it.id == objectId }
-        }
+        }.failure { exception ->
+            _homeUiState.emit(HomeUiState.Error(exception.message.orEmpty()))
+        }.launchIn(viewModelScope, ioDispatcher)
     }
 }

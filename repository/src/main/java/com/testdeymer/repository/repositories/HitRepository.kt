@@ -5,7 +5,7 @@ import com.testdeymer.datasource.remote.IHitRemoteDataSource
 import com.testdeymer.repository.RepositoryConstants.Tags.TAG_NULL
 import com.testdeymer.repository.mappers.toDomain
 import com.testdeymer.repository.mappers.toEntity
-import com.testdeymer.repository.utils.OnResult
+import kotlinx.coroutines.flow.flow
 import java.lang.Exception
 import javax.inject.Inject
 
@@ -14,44 +14,53 @@ class HitRepository @Inject constructor(
     private val hitLocalDataSource: IHitLocalDataSource
 ) : IHitRepository {
 
-    override suspend fun getHits() = try {
-        val dtoList = hitRemoteDataSource.getHits()
-        hitLocalDataSource.insertHit(dtoList.map { it.toEntity() })
-        val entities = hitLocalDataSource.fetchHits().map { it.toDomain() }
-        OnResult.Success(entities)
-    } catch (exception: Exception) {
-        OnResult.Error(exception)
-    }
-
-    override suspend fun fetchAllHits() = try {
-        val result = hitLocalDataSource.fetchHits()
-        if(result.isNotEmpty()) {
-            OnResult.Success(result.map { it.toDomain() })
-        } else {
+    override fun getHits() = flow {
+        try {
             val dtoList = hitRemoteDataSource.getHits()
-            val entities = dtoList.map { it.toEntity() }
-            hitLocalDataSource.insertHit(entities)
-            OnResult.Success(entities.map { it.toDomain() })
+            hitLocalDataSource.insertHit(dtoList.map { it.toEntity() })
+            val entities = hitLocalDataSource.fetchHits().map { it.toDomain() }
+            emit(Result.success(entities))
+        } catch (exception: Exception) {
+            emit(Result.failure(exception))
         }
-    } catch (exception: Exception) {
-        OnResult.Error(exception)
     }
 
-    override suspend fun getHitById(
-        objectId: String
-    ) = try {
-         hitLocalDataSource.fetchHitById(objectId)?.let { hit ->
-             OnResult.Success(hit.toDomain())
-         } ?: run {
-             OnResult.Error(IllegalArgumentException(TAG_NULL))
-         }
-    } catch (exception: Exception) {
-        OnResult.Error(exception)
+    override fun fetchAllHits() = flow {
+        try {
+            val result = hitLocalDataSource.fetchHits()
+            if(result.isNotEmpty()) {
+                emit(Result.success(result.map { it.toDomain() }))
+            } else {
+                val dtoList = hitRemoteDataSource.getHits()
+                val entities = dtoList.map { it.toEntity() }
+                hitLocalDataSource.insertHit(entities)
+                emit(Result.success(entities.map { it.toDomain() }))
+            }
+        } catch (exception: Exception) {
+            emit(Result.failure(exception))
+        }
     }
 
-    override suspend fun deleteHitById(
+    override fun getHitById(
         objectId: String
-    ) = hitLocalDataSource.deleteHit(
-        objectId
-    )
+    ) = flow {
+        try {
+            hitLocalDataSource.fetchHitById(objectId)?.let { hitEntity ->
+                emit(Result.success(hitEntity.toDomain()))
+            } ?: emit(Result.failure(IllegalArgumentException(TAG_NULL)))
+        } catch (exception: Exception) {
+            emit(Result.failure(exception))
+        }
+    }
+
+    override fun deleteHitById(
+        objectId: String
+    ) = flow {
+        try {
+            hitLocalDataSource.deleteHit(objectId)
+            emit(Result.success(Unit))
+        } catch (exception: Exception) {
+            emit(Result.failure(exception))
+        }
+    }
 }
