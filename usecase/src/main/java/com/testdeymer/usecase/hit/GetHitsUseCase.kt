@@ -7,6 +7,5 @@ class GetHitsUseCase @Inject constructor(
     private val hitRepository: IHitRepository
 ) {
 
-    suspend fun invoke() =
-        hitRepository.getHits()
+    fun invoke() = hitRepository.getHits()
 }

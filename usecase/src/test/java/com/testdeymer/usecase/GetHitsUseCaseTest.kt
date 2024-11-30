@@ -1,10 +1,12 @@
 package com.testdeymer.usecase
 
+import com.testdeymer.repository.domain.HitDomain
 import com.testdeymer.repository.repositories.IHitRepository
-import com.testdeymer.repository.utils.OnResult
 import com.testdeymer.usecase.data.generateDummyHitDomainList
 import com.testdeymer.usecase.hit.GetHitsUseCase
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
@@ -30,24 +32,30 @@ class GetHitsUseCaseTest {
     }
 
     @Test
-    fun `invoke should return success result when repository returns hit domains`() = runTest {
+    fun `invoke should emit success result when repository returns hit domains`() = runTest {
         val expectedHits = generateDummyHitDomainList()
-        val successResult = OnResult.Success(expectedHits)
-        `when`(mockHitRepository.getHits()).thenReturn(successResult)
-        val result = getHitsUseCase.invoke()
-        assertTrue(result is OnResult.Success)
-        assertEquals(expectedHits, (result as OnResult.Success).data)
+        val successFlow = flowOf(Result.success(expectedHits))
+        `when`(mockHitRepository.getHits()).thenReturn(successFlow)
+        val results = mutableListOf<Result<List<HitDomain>>>()
+        getHitsUseCase.invoke().toList(results)
+        assertEquals(1, results.size)
+        val result = results.first()
+        assertTrue(result.isSuccess)
+        assertEquals(expectedHits, result.getOrNull())
         verify(mockHitRepository).getHits()
     }
 
     @Test
-    fun `invoke should return error result when repository throws an exception`() = runTest {
+    fun `invoke should emit error result when repository throws an exception`() = runTest {
         val exception = Exception("Test exception")
-        val errorResult = OnResult.Error(exception)
-        `when`(mockHitRepository.getHits()).thenReturn(errorResult)
-        val result = getHitsUseCase.invoke()
-        assertTrue(result is OnResult.Error)
-        assertEquals(exception, (result as OnResult.Error).exception)
+        val errorFlow = flowOf(Result.failure<List<HitDomain>>(exception))
+        `when`(mockHitRepository.getHits()).thenReturn(errorFlow)
+        val results = mutableListOf<Result<List<HitDomain>>>()
+        getHitsUseCase.invoke().toList(results)
+        assertEquals(1, results.size)
+        val result = results.first()
+        assertTrue(result.isFailure)
+        assertEquals(exception, result.exceptionOrNull())
         verify(mockHitRepository).getHits()
     }
 }

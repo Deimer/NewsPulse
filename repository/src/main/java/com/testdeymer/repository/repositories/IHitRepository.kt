@@ -1,19 +1,19 @@
 package com.testdeymer.repository.repositories
 
 import com.testdeymer.repository.domain.HitDomain
-import com.testdeymer.repository.utils.OnResult
+import kotlinx.coroutines.flow.Flow
 
 interface IHitRepository {
 
-    suspend fun getHits(): OnResult<List<HitDomain>>
+    fun getHits(): Flow<Result<List<HitDomain>>>
 
-    suspend fun fetchAllHits(): OnResult<List<HitDomain>>
+    fun fetchAllHits(): Flow<Result<List<HitDomain>>>
 
-    suspend fun getHitById(
+    fun getHitById(
         objectId: String
-    ): OnResult<HitDomain>
+    ): Flow<Result<HitDomain>>
 
-    suspend fun deleteHitById(
+    fun deleteHitById(
         objectId: String
-    )
+    ): Flow<Result<Unit>>
 }
