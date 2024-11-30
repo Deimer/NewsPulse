@@ -2,7 +2,6 @@ package com.testdeymer.usecase
 
 import com.testdeymer.repository.domain.HitDomain
 import com.testdeymer.repository.repositories.IHitRepository
-import com.testdeymer.repository.utils.OnResult
 import com.testdeymer.usecase.data.generateDummyHitDomainList
 import com.testdeymer.usecase.hit.FetchHitByIdUseCase
 import kotlinx.coroutines.ExperimentalCoroutinesApi
