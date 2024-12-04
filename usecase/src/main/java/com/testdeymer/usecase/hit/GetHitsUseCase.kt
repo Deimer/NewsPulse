@@ -7,5 +7,5 @@ class GetHitsUseCase @Inject constructor(
     private val hitRepository: IHitRepository
 ) {
 
-    fun invoke() = hitRepository.getHits()
+    operator fun invoke() = hitRepository.getHits()
 }

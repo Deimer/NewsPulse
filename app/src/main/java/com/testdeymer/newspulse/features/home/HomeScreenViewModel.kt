@@ -51,7 +51,7 @@ class HomeScreenViewModel @Inject constructor(
     }
 
     private fun fetchAllHits() {
-        fetchAllHitsUseCase.invoke()
+        fetchAllHitsUseCase()
             .map { hits ->
                 _itemList.value = hits.toUiModel()
             }.success {
@@ -67,7 +67,7 @@ class HomeScreenViewModel @Inject constructor(
     }
 
     fun getHits() {
-        getHitsUseCase.invoke().start {
+        getHitsUseCase().start {
             _isRefreshing.emit(true)
         }.map { hits ->
             _itemList.value = hits.toUiModel()
@@ -84,7 +84,7 @@ class HomeScreenViewModel @Inject constructor(
     }
 
     fun deleteHitById(objectId: String) {
-        deleteHitByIdUseCase.invoke(objectId).success {
+        deleteHitByIdUseCase(objectId).success {
             _itemList.value = _itemList.value.filterNot { it.id == objectId }
         }.failure { exception ->
             _homeUiState.emit(HomeUiState.Error(exception.message.orEmpty()))

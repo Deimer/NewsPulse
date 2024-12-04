@@ -7,7 +7,7 @@ class DeleteHitByIdUseCase @Inject constructor(
     private val hitRepository: IHitRepository
 ) {
 
-    fun invoke(
+    operator fun invoke(
         objectId: String
     ) = hitRepository.deleteHitById(
         objectId
