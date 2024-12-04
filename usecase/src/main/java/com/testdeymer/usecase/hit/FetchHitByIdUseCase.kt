@@ -7,7 +7,7 @@ class FetchHitByIdUseCase @Inject constructor(
     private val hitRepository: IHitRepository
 ) {
 
-    fun invoke(
+    operator fun invoke(
         objectId: String
     ) = hitRepository.getHitById(
         objectId

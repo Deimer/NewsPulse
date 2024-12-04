@@ -36,7 +36,7 @@ class DetailScreenViewModel @Inject constructor(
     val itemUiState: StateFlow<ItemUiModel> = _itemUiState.asStateFlow()
 
     fun getDetail(objectId: String) {
-        fetchHitByIdUseCase.invoke(objectId).map { hit ->
+        fetchHitByIdUseCase(objectId).map { hit ->
             _itemUiState.value = hit.toUiModel()
         }.success {
             _detailUiState.emit(DetailUiState.Success)
